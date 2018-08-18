@@ -19,7 +19,7 @@ const styles = theme => ({
     marginLeft: theme.spacing.unit * 3,
     marginRight: theme.spacing.unit * 3,
     [theme.breakpoints.up(400 + theme.spacing.unit * 3 * 2)]: {
-      width: 600,
+      width: 800,
       marginLeft: 'auto',
       marginRight: 'auto',
     },
@@ -49,17 +49,24 @@ function Xchg(props, context) {
       <CssBaseline />
       <main className={classes.layout}>
         <Paper className={classes.paper}>
-          <Typography variant="headline">Press &quot;End&quot; to terminate the session.</Typography>
-          <a href={url}>
-            {uuid}
-          </a>
-          <hr />
-          <a href={url}>
-            <Qr value={url} />
-          </a>
+          <Typography variant="headline">
+            Share URL or scan QR code to add clients to the session.
+          </Typography>
+          <Typography component="p">
+            <a href={url}>
+              <Qr value={url} />
+            </a>
+          </Typography>
+          <Typography component="p">
+            <a href={url}>
+              {uuid}
+            </a>
+          </Typography>
         </Paper>
         <Paper className={classes.paper}>
-          <Typography variant="headline">Press &quot;End&quot; to terminate the session.</Typography>
+          <Typography variant="headline">
+            Press &quot;End&quot; to terminate the session.
+          </Typography>
           <form className={classes.form} onSubmit={(ev) => { ev.preventDefault(); }}>
             <Button
               variant="fab"
