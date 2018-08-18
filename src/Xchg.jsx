@@ -1,18 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {
-  Avatar,
-  Button,
   CssBaseline,
   Paper,
-  Typography,
   withStyles,
 } from '@material-ui/core';
-import {
-  LockOutlined,
-} from '@material-ui/icons';
 
-import uuidv4 from 'uuid/v4';
+import Qr from './Qr';
 
 const styles = theme => ({
   layout: {
@@ -44,49 +38,32 @@ const styles = theme => ({
   },
 });
 
-function Landing(props, context) {
-  const { classes } = props;
-  const { router } = context;
-  const onStart = () => {
-    const uuid = uuidv4();
-    const url = `/${uuid}`;
-    router.history.push(url);
-  };
+function Xchg(props) {
+  const { classes, match } = props;
+  const { uuid } = match.params;
+  const url = global.location.toString();
   return (
     <React.Fragment>
       <CssBaseline />
       <main className={classes.layout}>
         <Paper className={classes.paper}>
-          <Avatar className={classes.avatar}>
-            <LockOutlined />
-          </Avatar>
-          <Typography variant="headline">Press &quot;Start&quot; to start a new session.</Typography>
-          <form className={classes.form} onSubmit={(ev) => { ev.preventDefault(); }}>
-            <Button
-              type="submit"
-              fullWidth
-              variant="raised"
-              color="primary"
-              className={classes.submit}
-              onClick={onStart}
-            >
-              Start
-            </Button>
-          </form>
+          <a href={url}>
+            {uuid}
+          </a>
+        </Paper>
+        <Paper className={classes.paper}>
+          <a href={url}>
+            <Qr value={url} />
+          </a>
         </Paper>
       </main>
     </React.Fragment>
   );
 }
 
-Landing.propTypes = {
+Xchg.propTypes = {
   classes: PropTypes.object.isRequired,
+  match: PropTypes.object.isRequired,
 };
 
-Landing.contextTypes = {
-  router: PropTypes.shape({
-    history: PropTypes.object.isRequired,
-  }).isRequired,
-};
-
-export default withStyles(styles)(Landing);
+export default withStyles(styles)(Xchg);
