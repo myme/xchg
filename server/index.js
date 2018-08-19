@@ -2,6 +2,7 @@ const uuid = require('uuid/v4');
 const server = require('http').createServer();
 const io = require('socket.io')(server);
 const logger = require('loglevel');
+logger.setLevel('info');
 
 const sessions = {};
 
@@ -18,6 +19,7 @@ io.on('connection', (socket) => {
 
   socket.on('newSession', (respond) => {
     sessionId = uuid();
+    socket.join(sessionId);
     info('new session');
     sessions[sessionId] = { clients: [socket] };
     respond(sessionId);
@@ -30,8 +32,15 @@ io.on('connection', (socket) => {
       return;
     }
     sessionId = requestId;
+    socket.join(sessionId);
     sessions[sessionId].clients.push(socket);
-    info('client attach to session');
+    info('client attached to session');
+    respond();
+  });
+
+  socket.on('xchg', (args, respond) => {
+    info('xchg', sessionId, args);
+    io.sockets.to(sessionId).emit('xchg', args);
     respond();
   });
 

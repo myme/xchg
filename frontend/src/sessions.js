@@ -1,4 +1,5 @@
 import io from 'socket.io-client';
+import * as log from 'loglevel';
 
 export default class SessionManager {
   constructor(websocketServer) {
@@ -12,8 +13,11 @@ export default class SessionManager {
       const socket = io(this.websocketServer, {
         transports: ['websocket'],
       });
-      socket.on('connect', () => resolve(socket));
-      socket.on('error', reject);
+      socket
+        .on('connect', () => resolve(socket))
+        // TODO: Output to GUI element
+        .on('xchg', (...args) => { log.warn(args); })
+        .on('error', reject);
     });
   }
 
@@ -44,6 +48,8 @@ export default class SessionManager {
         resolve();
       });
     });
+    
+    this.sessions[sessionId] = { socket };
   }
 
   async destroySession(sessionId) {
@@ -54,9 +60,21 @@ export default class SessionManager {
       return;
     }
 
-    const { socket } = session;
-    socket.close();
+    await new Promise((resolve) => {
+      const { socket } = session;
+      socket.once('disconnect', resolve);
+      socket.close();
+    });
+  }
 
-    await new Promise((resolve) => { socket.once('disconnect', resolve); });
+  async xchg(sessionId, args) {
+    return new Promise(resolve => {
+      if (!this.sessions[sessionId]) {
+        log.error(`invalid session: ${sessionId}`);
+        return;
+      }
+      const { socket } = this.sessions[sessionId];
+      socket.emit('xchg', args, resolve);
+    });
   }
 }

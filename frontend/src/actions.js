@@ -28,3 +28,7 @@ export const destroySession = sessionId => async (dispatch) => {
   await dispatch(getSessionManager()).destroySession(sessionId);
   dispatch(navigate('/'));
 };
+
+export const xchg = (...args) => async (dispatch) => {
+  await dispatch(getSessionManager()).xchg(...args);
+};
