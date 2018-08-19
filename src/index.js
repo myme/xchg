@@ -12,7 +12,7 @@ import registerServiceWorker from './registerServiceWorker';
 
 function createAppStore() {
   const history = createHistory();
-  const sessionManager = new SessionManager();
+  const sessionManager = new SessionManager('ws://localhost:8080');
   return createStore(reducer, applyMiddleware(thunk.withExtraArgument({
     history,
     sessionManager,

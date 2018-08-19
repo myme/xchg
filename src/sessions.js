@@ -1,18 +1,43 @@
+import io from 'socket.io-client';
+
 export default class SessionManager {
+  constructor(websocketServer) {
+    this.websocketServer = websocketServer;
+  }
+
   sessions = {}
 
+  async connect() {
+    return new Promise((resolve, reject) => {
+      const socket = io(this.websocketServer, {
+        transports: ['websocket'],
+      });
+      socket.on('connect', () => resolve(socket));
+      socket.on('error', reject);
+    });
+  }
+
   async newSession() {
-    const ws = new WebSocket('ws://localhost:8080');
+    const socket = await this.connect();
 
     const id = await new Promise(resolve => {
-      ws.onmessage = (message) => {
-        const { sessionId } = JSON.parse(message.data);
-        resolve(sessionId);
-      };
+      socket.emit('newSession', resolve);
     })
 
-    this.sessions[id] = { ws };
+    this.sessions[id] = { socket };
     return id;
+  }
+
+  async connectToSession(sessionId) {
+    if (this.sessions[sessionId]) {
+      return Promise.resolve();
+    }
+
+    const socket = await this.connect();
+
+    await new Promise((resolve, reject) => {
+      socket.emit('attachSession', sessionId, resolve);
+    })
   }
 
   async destroySession(sessionId) {
@@ -23,9 +48,9 @@ export default class SessionManager {
       return;
     }
 
-    const { ws } = session;
-    ws.close();
+    const { socket } = session;
+    socket.close();
 
-    await new Promise(resolve => { ws.onclose = resolve; });
+    await new Promise(resolve => { socket.once('disconnect', resolve); });
   }
 }

@@ -12,7 +12,7 @@ import {
   Close,
 } from '@material-ui/icons';
 
-import { destroySession } from './actions';
+import { connectToSession, destroySession } from './actions';
 import Qr from './Qr';
 
 const styles = theme => ({
@@ -84,7 +84,8 @@ function Xchg(props) {
 Xchg.propTypes = {
   classes: PropTypes.object.isRequired,
   match: PropTypes.object.isRequired,
+  connectToSession: PropTypes.func.isRequired,
   destroySession: PropTypes.func.isRequired,
 };
 
-export default withStyles(styles)(connect(null, { destroySession })(Xchg));
+export default withStyles(styles)(connect(null, { connectToSession, destroySession })(Xchg));
