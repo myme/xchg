@@ -12,7 +12,7 @@ import {
   Close,
 } from '@material-ui/icons';
 
-import { navigate } from './actions';
+import { destroySession } from './actions';
 import Qr from './Qr';
 
 const styles = theme => ({
@@ -40,11 +40,9 @@ const styles = theme => ({
 
 function Xchg(props) {
   const { classes, match } = props;
-  const { uuid } = match.params;
+  const { sessionId } = match.params;
   const url = global.location.toString();
-  const onEnd = () => {
-    props.navigate('/');
-  };
+  const destroy = () => props.destroySession(sessionId);
   return (
     <React.Fragment>
       <CssBaseline />
@@ -60,7 +58,7 @@ function Xchg(props) {
           </Typography>
           <Typography component="p">
             <a href={url}>
-              {uuid}
+              {sessionId}
             </a>
           </Typography>
         </Paper>
@@ -72,7 +70,7 @@ function Xchg(props) {
             <Button
               variant="fab"
               color="secondary"
-              onClick={onEnd}
+              onClick={destroy}
             >
               <Close />
             </Button>
@@ -86,6 +84,7 @@ function Xchg(props) {
 Xchg.propTypes = {
   classes: PropTypes.object.isRequired,
   match: PropTypes.object.isRequired,
+  destroySession: PropTypes.func.isRequired,
 };
 
-export default connect(null, { navigate })(withStyles(styles)(Xchg));
+export default withStyles(styles)(connect(null, { destroySession })(Xchg));

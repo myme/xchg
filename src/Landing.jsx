@@ -79,4 +79,4 @@ Landing.propTypes = {
   newSession: PropTypes.func.isRequired,
 };
 
-export default connect(null, { newSession })(withStyles(styles)(Landing));
+export default withStyles(styles)(connect(null, { newSession })(Landing));
