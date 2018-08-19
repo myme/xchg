@@ -6,7 +6,7 @@ export const navigate = (...args) => dispatch => dispatch(getHistory()).push(...
 
 export const gotoSession = sessionId => (dispatch) => {
   dispatch(navigate(`/${sessionId}`));
-}
+};
 
 export const newSession = () => async (dispatch) => {
   const sessionId = await dispatch(getSessionManager()).newSession();

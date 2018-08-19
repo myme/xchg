@@ -20,9 +20,9 @@ export default class SessionManager {
   async newSession() {
     const socket = await this.connect();
 
-    const id = await new Promise(resolve => {
+    const id = await new Promise((resolve) => {
       socket.emit('newSession', resolve);
-    })
+    });
 
     this.sessions[id] = { socket };
     return id;
@@ -30,14 +30,14 @@ export default class SessionManager {
 
   async connectToSession(sessionId) {
     if (this.sessions[sessionId]) {
-      return Promise.resolve();
+      return;
     }
 
     const socket = await this.connect();
 
-    await new Promise((resolve, reject) => {
+    await new Promise((resolve) => {
       socket.emit('attachSession', sessionId, resolve);
-    })
+    });
   }
 
   async destroySession(sessionId) {
@@ -51,6 +51,6 @@ export default class SessionManager {
     const { socket } = session;
     socket.close();
 
-    await new Promise(resolve => { socket.once('disconnect', resolve); });
+    await new Promise((resolve) => { socket.once('disconnect', resolve); });
   }
 }

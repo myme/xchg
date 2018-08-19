@@ -9,7 +9,7 @@ io.on('connection', (socket) => {
     respond(sessionId);
   });
 
-  socket.on('disconnect', function(){
+  socket.on('disconnect', () => {
     console.log('user disconnected');
   });
 });
