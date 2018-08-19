@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import {
   Button,
   CssBaseline,
@@ -11,6 +12,7 @@ import {
   Close,
 } from '@material-ui/icons';
 
+import { navigate } from './actions';
 import Qr from './Qr';
 
 const styles = theme => ({
@@ -36,13 +38,12 @@ const styles = theme => ({
   },
 });
 
-function Xchg(props, context) {
+function Xchg(props) {
   const { classes, match } = props;
-  const { router } = context;
   const { uuid } = match.params;
   const url = global.location.toString();
   const onEnd = () => {
-    router.history.push('/');
+    props.navigate('/');
   };
   return (
     <React.Fragment>
@@ -87,10 +88,4 @@ Xchg.propTypes = {
   match: PropTypes.object.isRequired,
 };
 
-Xchg.contextTypes = {
-  router: PropTypes.shape({
-    history: PropTypes.object.isRequired,
-  }).isRequired,
-};
-
-export default withStyles(styles)(Xchg);
+export default connect(null, { navigate })(withStyles(styles)(Xchg));

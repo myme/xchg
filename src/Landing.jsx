@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import {
   Avatar,
   Button,
@@ -11,8 +12,9 @@ import {
 import {
   LockOutlined,
 } from '@material-ui/icons';
-
 import uuidv4 from 'uuid/v4';
+
+import { navigate } from './actions';
 
 const styles = theme => ({
   layout: {
@@ -44,13 +46,12 @@ const styles = theme => ({
   },
 });
 
-function Landing(props, context) {
+function Landing(props) {
   const { classes } = props;
-  const { router } = context;
   const onStart = () => {
     const uuid = uuidv4();
     const url = `/${uuid}`;
-    router.history.push(url);
+    props.navigate(url);
   };
   return (
     <React.Fragment>
@@ -81,12 +82,7 @@ function Landing(props, context) {
 
 Landing.propTypes = {
   classes: PropTypes.object.isRequired,
+  navigate: PropTypes.func.isRequired,
 };
 
-Landing.contextTypes = {
-  router: PropTypes.shape({
-    history: PropTypes.object.isRequired,
-  }).isRequired,
-};
-
-export default withStyles(styles)(Landing);
+export default connect(null, { navigate })(withStyles(styles)(Landing));
