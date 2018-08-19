@@ -12,9 +12,8 @@ import {
 import {
   LockOutlined,
 } from '@material-ui/icons';
-import uuidv4 from 'uuid/v4';
 
-import { navigate } from './actions';
+import { newSession } from './actions';
 
 const styles = theme => ({
   layout: {
@@ -48,11 +47,6 @@ const styles = theme => ({
 
 function Landing(props) {
   const { classes } = props;
-  const onStart = () => {
-    const uuid = uuidv4();
-    const url = `/${uuid}`;
-    props.navigate(url);
-  };
   return (
     <React.Fragment>
       <CssBaseline />
@@ -69,7 +63,7 @@ function Landing(props) {
               variant="raised"
               color="primary"
               className={classes.submit}
-              onClick={onStart}
+              onClick={props.newSession}
             >
               Start
             </Button>
@@ -82,7 +76,7 @@ function Landing(props) {
 
 Landing.propTypes = {
   classes: PropTypes.object.isRequired,
-  navigate: PropTypes.func.isRequired,
+  newSession: PropTypes.func.isRequired,
 };
 
-export default connect(null, { navigate })(withStyles(styles)(Landing));
+export default connect(null, { newSession })(withStyles(styles)(Landing));
