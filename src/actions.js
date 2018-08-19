@@ -1,3 +1,5 @@
+import * as log from 'loglevel';
+
 export const getHistory = () => (dispatch, getState, { history }) => history;
 
 export const getSessionManager = () => (dispatch, getState, { sessionManager }) => sessionManager;
@@ -17,7 +19,7 @@ export const connectToSession = sessionId => async (dispatch) => {
   try {
     await dispatch(getSessionManager()).connectToSession(sessionId);
   } catch (err) {
-    console.error(err);
+    log.error(err);
     dispatch(navigate('/'));
   }
 };

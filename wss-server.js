@@ -1,6 +1,7 @@
 const uuid = require('uuid/v4');
 const server = require('http').createServer();
 const io = require('socket.io')(server);
+const logger = require('loglevel');
 
 const sessions = {};
 
@@ -9,7 +10,7 @@ io.on('connection', (socket) => {
 
   function log(level, ...args) {
     // eslint-disable-next-line no-console
-    console[level](`[${sessionId || 'unknown'}]`, ...args);
+    logger[level](`[${sessionId || 'unknown'}]`, ...args);
   }
 
   const info = log.bind(null, 'info');
@@ -48,5 +49,6 @@ io.on('connection', (socket) => {
 });
 
 server.listen(8080, () => {
-  console.log('WebSocket server running...');
+  // eslint-disable-next-line no-console
+  logger.log('WebSocket server running...');
 });
