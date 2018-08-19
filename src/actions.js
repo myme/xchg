@@ -14,8 +14,12 @@ export const newSession = () => async (dispatch) => {
 };
 
 export const connectToSession = sessionId => async (dispatch) => {
-  await dispatch(getSessionManager()).connectToSession(sessionId);
-  dispatch(gotoSession(sessionId));
+  try {
+    await dispatch(getSessionManager()).connectToSession(sessionId);
+  } catch (err) {
+    console.error(err);
+    dispatch(navigate('/'));
+  }
 };
 
 export const destroySession = sessionId => async (dispatch) => {

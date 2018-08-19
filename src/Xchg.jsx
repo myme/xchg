@@ -43,6 +43,7 @@ function Xchg(props) {
   const { sessionId } = match.params;
   const url = global.location.toString();
   const destroy = () => props.destroySession(sessionId);
+  props.connectToSession(sessionId);
   return (
     <React.Fragment>
       <CssBaseline />

@@ -35,8 +35,14 @@ export default class SessionManager {
 
     const socket = await this.connect();
 
-    await new Promise((resolve) => {
-      socket.emit('attachSession', sessionId, resolve);
+    await new Promise((resolve, reject) => {
+      socket.emit('attachSession', sessionId, (err) => {
+        if (err) {
+          reject(err);
+          return;
+        }
+        resolve();
+      });
     });
   }
 

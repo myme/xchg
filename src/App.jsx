@@ -14,7 +14,7 @@ function App(props) {
     <Router history={props.getHistory()}>
       <Switch>
         <Route exact path="/" component={Landing} />
-        <Route path="/:uuid" component={Xchg} />
+        <Route path="/:sessionId" component={Xchg} />
       </Switch>
     </Router>
   );
