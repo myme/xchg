@@ -5,24 +5,45 @@ const io = require('socket.io')(server);
 const sessions = {};
 
 io.on('connection', (socket) => {
+  let sessionId;
+
+  function log(level, ...args) {
+    // eslint-disable-next-line no-console
+    console[level](`[${sessionId || 'unknown'}]`, ...args);
+  }
+
+  const info = log.bind(null, 'info');
+  const error = log.bind(null, 'error');
+
   socket.on('newSession', (respond) => {
-    const sessionId = uuid();
-    console.log('[%s] new session', sessionId);
+    sessionId = uuid();
+    info('new session');
+    sessions[sessionId] = { clients: [socket] };
     respond(sessionId);
   });
 
-  socket.on('attachSession', (sessionId, respond) => {
-    if (!sessions[sessionId]) {
-      console.error('[%s] invalid session', sessionId);
+  socket.on('attachSession', (requestId, respond) => {
+    if (!sessions[requestId]) {
+      error(`invalid session: ${requestId}`);
       respond('no such session');
       return;
     }
-    console.log('[%s] client attach to session', sessionId);
+    sessionId = requestId;
+    sessions[sessionId].clients.push(socket);
+    info('client attach to session');
     respond();
   });
 
   socket.on('disconnect', () => {
-    console.log('user disconnected');
+    info('disconnected');
+    if (sessionId && sessions[sessionId]) {
+      const clients = sessions[sessionId].clients.filter(c => c !== socket);
+      sessions[sessionId].clients = clients;
+      if (!clients.length) {
+        info('session terminated');
+        delete sessions[sessionId];
+      }
+    }
   });
 });
 
