@@ -1,17 +1,19 @@
+const uuidv4 = require('uuid/v4');
 const WebSocket = require('ws');
 
 const wss = new WebSocket.Server({ port: 8080 });
 
 wss.on('connection', (ws) => {
-  console.log('new connection');
+  const sessionId = uuidv4();
+  console.log('[%s] New session!', sessionId);
 
   ws.on('close', () => {
-    console.log('client disconnected');
+    console.log('[%s] Disconnect!', sessionId);
   });
 
   ws.on('message', (message) => {
-    console.log('received: %s', message);
+    console.log('[%s] %s', sessionId, message);
   });
 
-  ws.send('something');
+  ws.send(JSON.stringify({ sessionId }));
 });

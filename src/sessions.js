@@ -1,24 +1,31 @@
-import uuidv4 from 'uuid/v4';
-
 export default class SessionManager {
   sessions = {}
 
-  newSession() {
-    const sessionId = uuidv4();
+  async newSession() {
     const ws = new WebSocket('ws://localhost:8080');
-    ws.onmessage = (message) => {
-      console.log(message);
-    };
-    this.sessions[sessionId] = ws;
-    return sessionId;
+
+    const id = await new Promise(resolve => {
+      ws.onmessage = (message) => {
+        const { sessionId } = JSON.parse(message.data);
+        resolve(sessionId);
+      };
+    })
+
+    this.sessions[id] = { ws };
+    return id;
   }
 
-  destroySession(sessionId) {
+  async destroySession(sessionId) {
     const session = this.sessions[sessionId];
+
     delete this.sessions[sessionId];
     if (!session) {
       return;
     }
-    session.close();
+
+    const { ws } = session;
+    ws.close();
+
+    await new Promise(resolve => { ws.onclose = resolve; });
   }
 }
